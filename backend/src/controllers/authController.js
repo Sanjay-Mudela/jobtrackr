@@ -59,12 +59,54 @@ const registerUser = async (req, res) => {
   }
 };
 
+
+// @desc    Login user
+// @route   POST /api/auth/login
+// @access  Public
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = async (req, res) => {
-  // We will implement this in the next step
-  res.status(501).json({ message: 'Login not implemented yet' });
+  try {
+    const { email, password } = req.body;
+
+    // 1. Basic validation
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide email and password' });
+    }
+
+    // 2. Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // 3. Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // 4. Generate token
+    const token = generateToken(user._id);
+
+    // 5. Respond without password
+    res.json({
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error('Login error:', error.message);
+    res.status(500).json({ message: 'Server error during login' });
+  }
 };
+
 
 module.exports = { registerUser, loginUser };
