@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -9,6 +12,9 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -18,8 +24,22 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // We will implement API call later
-    console.log('Login form submitted', formData);
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await api.post('/auth/login', formData);
+
+      login(res.data.user, res.data.token);
+
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      const msg = err.response?.data?.message || 'Login failed';
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

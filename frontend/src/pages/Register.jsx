@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -10,6 +13,9 @@ function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -19,8 +25,24 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // We will implement API call later
-    console.log('Register form submitted', formData);
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await api.post('/auth/register', formData);
+
+      // res.data has { message, user, token }
+      login(res.data.user, res.data.token);
+
+      // Redirect to dashboard
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      const msg = err.response?.data?.message || 'Registration failed';
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
