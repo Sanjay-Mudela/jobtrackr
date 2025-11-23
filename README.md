@@ -18,7 +18,7 @@ It features **JWT authentication, job CRUD operations, analytics dashboard, and 
 ## 📸 Screenshots (Coming Soon)
 
 > Add images of UI here (Dashboard, Add Job form, Login screen)  
-You can take screenshots & upload here later.
+I can take screenshots & upload here later.
 
 ---
 
