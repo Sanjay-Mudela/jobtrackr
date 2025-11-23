@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 function Dashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [stats, setStats] = useState(null);
   const [loadingJobs, setLoadingJobs] = useState(true);
@@ -45,16 +47,18 @@ function Dashboard() {
       const res = await api.get("/jobs/stats");
       setStats(res.data);
     } catch (err) {
-      alert(`Delete failed due to error: ${err.response?.data?.message || err.message}`);
+      alert(
+        `Delete failed due to error: ${
+          err.response?.data?.message || err.message
+        }`
+      );
     }
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">
-          Welcome, {user?.name}
-        </h2>
+        <h2 className="text-2xl font-bold text-white">Welcome, {user?.name}</h2>
         <p className="text-slate-400 text-sm">
           Here’s an overview of your job search.
         </p>
@@ -99,7 +103,7 @@ function Dashboard() {
       {/* Add Job button */}
       <div className="flex justify-end">
         <button
-          onClick={() => (window.location.href = "/add-job")}
+          onClick={() => navigate("/add-job")}
           className="inline-flex items-center gap-1 px-3 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 text-sm font-medium"
         >
           <span>➕</span>
@@ -145,9 +149,7 @@ function Dashboard() {
                   <td className="px-4 py-3">{job.status}</td>
                   <td className="px-4 py-3 space-x-2">
                     <button
-                      onClick={() =>
-                        (window.location.href = `/edit-job/${job._id}`)
-                      }
+                      onClick={() => navigate(`/edit-job/${job._id}`)}
                       className="px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-xs"
                     >
                       Edit
