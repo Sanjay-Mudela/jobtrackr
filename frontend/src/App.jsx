@@ -1,23 +1,25 @@
-import { Routes, Route, Link } from 'react-router-dom';
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import Dashboard from './pages/Dashboard.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx';
-import { useAuth } from './context/AuthContext';
+import { Routes, Route, Link } from "react-router-dom";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import AddJob from "./pages/AddJob";
+import EditJob from "./pages/EditJob";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
   const { user, logout } = useAuth();
 
   return (
     <div>
-      <nav style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
-        <Link to="/" style={{ marginRight: '10px' }}>
+      <nav style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+        <Link to="/" style={{ marginRight: "10px" }}>
           Home
         </Link>
 
         {!user && (
           <>
-            <Link to="/login" style={{ marginRight: '10px' }}>
+            <Link to="/login" style={{ marginRight: "10px" }}>
               Login
             </Link>
             <Link to="/register">Register</Link>
@@ -26,7 +28,7 @@ function App() {
 
         {user && (
           <>
-            <Link to="/dashboard" style={{ marginRight: '10px' }}>
+            <Link to="/dashboard" style={{ marginRight: "10px" }}>
               Dashboard
             </Link>
             <button onClick={logout}>Logout</button>
@@ -38,7 +40,7 @@ function App() {
         <Route
           path="/"
           element={
-            <div style={{ padding: '20px' }}>
+            <div style={{ padding: "20px" }}>
               <h1>JobTrackr</h1>
               <p>Track your job applications and interviews in one place.</p>
             </div>
@@ -52,6 +54,23 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/add-job"
+          element={
+            <ProtectedRoute>
+              <AddJob />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-job/:id"
+          element={
+            <ProtectedRoute>
+              <EditJob />
             </ProtectedRoute>
           }
         />
