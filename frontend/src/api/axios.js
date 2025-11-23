@@ -1,12 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
+// Prefer env variable (for deployment). Fallback to localhost (for local dev).
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
 
 // Attach token automatically if present
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('jobtrackr_token');
+  const token = localStorage.getItem("jobtrackr_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
