@@ -126,10 +126,55 @@ const deleteJob = async (req, res) => {
   }
 };
 
+
+// @desc    Get job statistics for logged-in user
+// @route   GET /api/jobs/stats
+// @access  Private
+const getJobStats = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const stats = await JobApplication.aggregate([
+      { $match: { user: userId } },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const defaultStats = {
+      total: 0,
+      Applied: 0,
+      "Online Test": 0,
+      Interview: 0,
+      Offer: 0,
+      Rejected: 0,
+    };
+
+    let total = 0;
+    stats.forEach((item) => {
+      defaultStats[item._id] = item.count;
+      total += item.count;
+    });
+
+    defaultStats.total = total;
+
+    res.json(defaultStats);
+  } catch (error) {
+    console.error("Get stats error:", error.message);
+    res.status(500).json({ message: "Server error while fetching stats" });
+  }
+};
+
+
 module.exports = {
   createJob,
   getJobs,
   getJobById,
   updateJob,
   deleteJob,
+  getJobStats,
 };
+
