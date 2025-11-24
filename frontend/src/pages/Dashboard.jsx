@@ -35,6 +35,30 @@ function getFollowUpInfo(job) {
   return { label: "Follow-up scheduled", type: "scheduled" };
 }
 
+function getStatusBadgeClasses(status) {
+  let base =
+    "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium";
+
+  switch (status) {
+    case "Applied":
+      return base + " bg-slate-800 text-slate-100 ring-1 ring-slate-600";
+    case "Online Test":
+      return base + " bg-amber-500/10 text-amber-300 ring-1 ring-amber-500/40";
+    case "Interview":
+      return (
+        base + " bg-purple-500/15 text-purple-300 ring-1 ring-purple-500/40"
+      );
+    case "Offer":
+      return (
+        base + " bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/40"
+      );
+    case "Rejected":
+      return base + " bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/40";
+    default:
+      return base + " bg-slate-800 text-slate-100 ring-1 ring-slate-700";
+  }
+}
+
 function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -339,7 +363,13 @@ function Dashboard() {
                   </td>
 
                   <td className="px-4 py-3">{job.position}</td>
-                  <td className="px-4 py-3">{job.status}</td>
+                  
+                  <td className="px-4 py-3">
+                    <span className={getStatusBadgeClasses(job.status)}>
+                      {job.status}
+                    </span>
+                  </td>
+
                   <td className="px-4 py-3 space-x-2">
                     <button
                       onClick={() => navigate(`/edit-job/${job._id}`)}
