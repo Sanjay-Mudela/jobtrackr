@@ -86,6 +86,9 @@ function Dashboard() {
 
   const [deletingJobId, setDeletingJobId] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -184,6 +187,13 @@ function Dashboard() {
     return 0;
   });
 
+  const totalJobs = sortedJobs.length;
+  const totalPages = Math.max(1, Math.ceil(totalJobs / pageSize));
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedJobs = sortedJobs.slice(startIndex, endIndex);
+
   return (
     <div className="space-y-6">
       {/* Page header */}
@@ -280,7 +290,10 @@ function Dashboard() {
               placeholder="Search by company or position..."
               className="input-field mt-1"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
 
@@ -290,7 +303,10 @@ function Dashboard() {
             <select
               className="input-field mt-1"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
             >
               <option value="All">All</option>
               <option value="Applied">Applied</option>
@@ -307,7 +323,10 @@ function Dashboard() {
             <select
               className="input-field mt-1"
               value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
+              onChange={(e) => {
+                setSortOption(e.target.value);
+                setCurrentPage(1);
+              }}
             >
               <option value="latest">Newest first</option>
               <option value="oldest">Oldest first</option>
@@ -323,7 +342,10 @@ function Dashboard() {
             <input
               type="checkbox"
               checked={showFollowUpsOnly}
-              onChange={(e) => setShowFollowUpsOnly(e.target.checked)}
+              onChange={(e) => {
+                setShowFollowUpsOnly(e.target.checked);
+                setCurrentPage(1);
+              }}
               className="h-4 w-4 rounded border-slate-500 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
             />
             <span className="text-[11px] sm:text-xs">Show follow-ups only</span>
@@ -368,95 +390,152 @@ function Dashboard() {
             your search.
           </p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-950/70 border-b border-slate-800">
-                <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
-                  Company
-                </th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
-                  Position
-                </th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-right text-[11px] font-semibold tracking-wide text-slate-300 uppercase w-32">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {sortedJobs.map((job, index) => (
-                <tr
-                  key={job._id}
-                  className={`border-t border-slate-800 hover:bg-slate-900/70 transition-colors ${
-                    index % 2 === 0 ? "bg-slate-900/40" : "bg-slate-900/20"
-                  }`}
-                >
-                  <td className="px-4 py-3 align-top">
-                    <div className="font-medium text-slate-100">
-                      {job.company}
-                    </div>
-
-                    {/* Follow-up badge (if any) */}
-                    {(() => {
-                      const info = getFollowUpInfo(job);
-                      if (!info) return null;
-
-                      let baseClasses =
-                        "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium mt-1";
-
-                      if (info.type === "overdue") {
-                        baseClasses +=
-                          " bg-red-500/15 text-red-300 ring-1 ring-red-500/40";
-                      } else if (info.type === "today") {
-                        baseClasses +=
-                          " bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/40";
-                      } else if (info.type === "upcoming") {
-                        baseClasses +=
-                          " bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/40";
-                      } else {
-                        // scheduled
-                        baseClasses +=
-                          " bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/30";
-                      }
-
-                      return <span className={baseClasses}>{info.label}</span>;
-                    })()}
-                  </td>
-
-                  <td className="px-4 py-3">{job.position}</td>
-
-                  <td className="px-4 py-3">
-                    <span className={getStatusBadgeClasses(job.status)}>
-                      {job.status}
-                    </span>
-                  </td>
-
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => navigate(`/edit-job/${job._id}`)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDelete(job._id)}
-                        disabled={deletingJobId === job._id}
-                      >
-                        {deletingJobId === job._id ? "Deleting..." : "Delete"}
-                      </Button>
-                    </div>
-                  </td>
+          <>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-950/70 border-b border-slate-800">
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
+                    Company
+                  </th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
+                    Position
+                  </th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-right text-[11px] font-semibold tracking-wide text-slate-300 uppercase w-32">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {paginatedJobs.map((job, index) => (
+                  <tr
+                    key={job._id}
+                    className={`border-t border-slate-800 hover:bg-slate-900/70 transition-colors ${
+                      index % 2 === 0 ? "bg-slate-900/40" : "bg-slate-900/20"
+                    }`}
+                  >
+                    <td className="px-4 py-3 align-top">
+                      <div className="font-medium text-slate-100">
+                        {job.company}
+                      </div>
+
+                      {/* Follow-up badge (if any) */}
+                      {(() => {
+                        const info = getFollowUpInfo(job);
+                        if (!info) return null;
+
+                        let baseClasses =
+                          "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium mt-1";
+
+                        if (info.type === "overdue") {
+                          baseClasses +=
+                            " bg-red-500/15 text-red-300 ring-1 ring-red-500/40";
+                        } else if (info.type === "today") {
+                          baseClasses +=
+                            " bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/40";
+                        } else if (info.type === "upcoming") {
+                          baseClasses +=
+                            " bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/40";
+                        } else {
+                          // scheduled
+                          baseClasses +=
+                            " bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/30";
+                        }
+
+                        return (
+                          <span className={baseClasses}>{info.label}</span>
+                        );
+                      })()}
+                    </td>
+
+                    <td className="px-4 py-3">{job.position}</td>
+
+                    <td className="px-4 py-3">
+                      <span className={getStatusBadgeClasses(job.status)}>
+                        {job.status}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => navigate(`/edit-job/${job._id}`)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete(job._id)}
+                          disabled={deletingJobId === job._id}
+                        >
+                          {deletingJobId === job._id ? "Deleting..." : "Delete"}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {paginatedJobs.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-4 py-6 text-center text-sm text-slate-400"
+                    >
+                      No jobs found for this page.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* Pagination footer */}
+            <div className="flex items-center justify-between px-4 py-3 border-t border-slate-800 text-xs text-slate-400">
+              <div>
+                Page{" "}
+                <span className="font-semibold text-slate-100">
+                  {currentPage}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-slate-100">
+                  {totalPages}
+                </span>
+                {" • "}
+                Showing{" "}
+                <span className="font-semibold text-slate-100">
+                  {paginatedJobs.length}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-slate-100">
+                  {sortedJobs.length}
+                </span>{" "}
+                filtered jobs
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-2 py-1 rounded-md border border-slate-700 bg-slate-900/60 text-[11px] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-800/80"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-2 py-1 rounded-md border border-slate-700 bg-slate-900/60 text-[11px] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-800/80"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </Card>
     </div>
