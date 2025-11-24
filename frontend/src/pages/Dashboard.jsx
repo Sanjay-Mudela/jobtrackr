@@ -246,16 +246,16 @@ function Dashboard() {
       )}
 
       {/* Filters row: Search + Status + Sort */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+      <Card className="mt-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between px-4 py-3">
         {/* Left side: search + status */}
         <div className="flex-1 flex flex-col sm:flex-row gap-3">
           {/* Search */}
           <div className="w-full sm:w-64">
             <label className="text-xs text-slate-300">Search</label>
-            <Input
+            <input
               type="text"
               placeholder="Search by company or position..."
-              className="mt-1"
+              className="input-field mt-1"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -278,7 +278,7 @@ function Dashboard() {
             </select>
           </div>
 
-          {/* NEW: Sort dropdown */}
+          {/* Sort dropdown */}
           <div className="w-full sm:w-48">
             <label className="text-xs text-slate-300">Sort by</label>
             <select
@@ -296,7 +296,6 @@ function Dashboard() {
 
         {/* Right side: follow-up toggle + count */}
         <div className="flex flex-col items-end gap-2 text-xs">
-          {/* NEW: Follow-ups only toggle */}
           <label className="flex items-center gap-2 text-slate-300">
             <input
               type="checkbox"
@@ -307,7 +306,6 @@ function Dashboard() {
             <span className="text-[11px] sm:text-xs">Show follow-ups only</span>
           </label>
 
-          {/* Count display */}
           <div className="text-[11px] sm:text-xs text-slate-400">
             Showing{" "}
             <span className="text-slate-100 font-semibold">
@@ -318,7 +316,7 @@ function Dashboard() {
             jobs
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Jobs table */}
       <Card className="overflow-hidden mt-6">
