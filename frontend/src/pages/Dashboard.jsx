@@ -357,19 +357,30 @@ function Dashboard() {
           </p>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-slate-950">
-              <tr className="text-left text-slate-400">
-                <th className="px-4 py-3">Company</th>
-                <th className="px-4 py-3">Position</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 w-32">Actions</th>
+            <thead>
+              <tr className="bg-slate-950/70 border-b border-slate-800">
+                <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
+                  Company
+                </th>
+                <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
+                  Position
+                </th>
+                <th className="px-4 py-3 text-left text-[11px] font-semibold tracking-wide text-slate-300 uppercase">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-right text-[11px] font-semibold tracking-wide text-slate-300 uppercase w-32">
+                  Actions
+                </th>
               </tr>
             </thead>
+
             <tbody>
-              {sortedJobs.map((job) => (
+              {sortedJobs.map((job, index) => (
                 <tr
                   key={job._id}
-                  className="border-t border-slate-800 hover:bg-slate-900/80 transition-colors duration-150"
+                  className={`border-t border-slate-800 hover:bg-slate-900/70 transition-colors ${
+                    index % 2 === 0 ? "bg-slate-900/40" : "bg-slate-900/20"
+                  }`}
                 >
                   <td className="px-4 py-3 align-top">
                     <div className="font-medium text-slate-100">
@@ -411,8 +422,8 @@ function Dashboard() {
                     </span>
                   </td>
 
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
                       <Button
                         variant="secondary"
                         size="sm"
