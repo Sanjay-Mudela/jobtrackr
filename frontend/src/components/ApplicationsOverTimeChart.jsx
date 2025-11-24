@@ -1,4 +1,3 @@
-// frontend/src/components/ApplicationsOverTimeChart.jsx
 import {
   AreaChart,
   Area,
@@ -8,6 +7,8 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import Card from "./ui/Card";
+
 
 function formatDateYYYYMMDD(date) {
   const y = date.getFullYear();
@@ -64,7 +65,7 @@ function ApplicationsOverTimeChart({ jobs }) {
   // If literally nothing in 30 days, show a friendly message instead of an empty chart
   if (totalInWindow === 0) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-4 shadow-sm">
+      <Card className="px-4 py-4">
         <div className="mb-2 flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-slate-100">
@@ -78,12 +79,12 @@ function ApplicationsOverTimeChart({ jobs }) {
         <p className="text-[11px] text-slate-500">
           Start adding jobs to see your application trend over time.
         </p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-4 shadow-sm">
+    <Card className="px-4 py-4">
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-100">
@@ -156,7 +157,7 @@ function ApplicationsOverTimeChart({ jobs }) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }
 

@@ -242,18 +242,18 @@ function Dashboard() {
       )}
 
       {/* Charts row: status + source */}
-      {loadingStats || !stats ? (
-        <ChartsSkeleton />
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {!loadingStats && stats && (
+        <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
           <StatusChart stats={stats} />
           <SourceChart jobs={jobs} />
         </div>
       )}
 
-      {/* Applications over time (uses jobs) */}
+      {/* Applications over time */}
       {!loadingJobs && jobs.length > 0 && (
-        <ApplicationsOverTimeChart jobs={jobs} />
+        <div className="mt-4">
+          <ApplicationsOverTimeChart jobs={jobs} />
+        </div>
       )}
 
       {/* Filters row: Search + Status + Sort */}

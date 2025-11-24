@@ -1,4 +1,3 @@
-// frontend/src/components/SourceChart.jsx
 import {
   PieChart,
   Pie,
@@ -7,6 +6,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import Card from "./ui/Card";
+
 
 // Match your dark theme + distinct per-source colors
 const SOURCE_COLORS = {
@@ -52,7 +53,7 @@ function SourceChart({ jobs }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-4 shadow-sm">
+    <Card className="px-4 py-4">
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-100">
@@ -115,7 +116,7 @@ function SourceChart({ jobs }) {
         Total applications:{" "}
         <span className="font-semibold text-slate-200">{total}</span>
       </p>
-    </div>
+    </Card>
   );
 }
 

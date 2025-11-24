@@ -8,6 +8,8 @@ import {
   CartesianGrid,
   Cell,
 } from "recharts";
+import Card from "./ui/Card";
+
 
 const STATUS_COLORS = {
   Applied: "#6366f1", // indigo
@@ -31,7 +33,7 @@ function StatusChart({ stats }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-4 shadow-sm">
+    <Card className="px-4 py-4">
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-100">
@@ -96,7 +98,7 @@ function StatusChart({ stats }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }
 
