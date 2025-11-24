@@ -4,6 +4,7 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import StatusChart from "../components/StatusChart";
+import SourceChart from "../components/SourceChart";
 
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
@@ -225,8 +226,13 @@ function Dashboard() {
         )}
       </div>
 
-      {/* Status chart */}
-      {!loadingStats && stats && <StatusChart stats={stats} />}
+      {/* Charts row: status + source */}
+      {!loadingStats && stats && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <StatusChart stats={stats} />
+          <SourceChart jobs={jobs} />
+        </div>
+      )}
 
       {/* Filters row: Search + Status + Sort */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
