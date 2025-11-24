@@ -3,6 +3,7 @@ import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 import Input from "../components/ui/Input";
+import Card from "../components/ui/Card";
 
 function AddJob() {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ function AddJob() {
   return (
     <div className="max-w-lg mx-auto">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-white">Add Job</h2>
+        <h2 className="text-xl font-semibold text-slate-100 mb-4">Add Job</h2>
         <button
           onClick={() => navigate(-1)}
           className="text-xs text-slate-300 hover:text-indigo-300"
@@ -53,7 +54,7 @@ function AddJob() {
         </button>
       </div>
 
-      <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 shadow-lg">
+      <Card className="p-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm text-slate-200">Company</label>
@@ -158,7 +159,7 @@ function AddJob() {
             {loading ? "Saving..." : "Save Job"}
           </button>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

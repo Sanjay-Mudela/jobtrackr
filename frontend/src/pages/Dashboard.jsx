@@ -8,6 +8,8 @@ import SourceChart from "../components/SourceChart";
 import ApplicationsOverTimeChart from "../components/ApplicationsOverTimeChart";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
+import Card from "../components/ui/Card";
+
 
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
@@ -320,7 +322,7 @@ function Dashboard() {
       </div>
 
       {/* Jobs table */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden">
+      <Card className="overflow-hidden mt-6">
         <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
           <h3 className="font-semibold text-slate-100">Job Applications</h3>
         </div>
@@ -422,7 +424,7 @@ function Dashboard() {
             </tbody>
           </table>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
