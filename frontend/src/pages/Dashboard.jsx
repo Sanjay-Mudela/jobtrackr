@@ -174,26 +174,37 @@ function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      {/* Page header */}
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-50">
             Welcome, {user?.name}
-          </h2>
-          <p className="text-slate-400 text-sm">
-            Track your job applications and see your progress at a glance.
+          </h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Overview of your job search progress and upcoming follow-ups.
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => navigate("/add-job")}
-          className="flex items-center gap-1 shadow-sm"
-        >
-          <span>➕</span>
-          <span>Add Job</span>
-        </Button>
+        <div className="flex items-center gap-3">
+          {/* Total applications pill */}
+          <div className="hidden sm:inline-flex items-center rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-[11px] text-slate-300">
+            Total applications:&nbsp;
+            <span className="font-semibold text-slate-50">
+              {stats?.total ?? jobs.length}
+            </span>
+          </div>
+
+          {/* Add Job button */}
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => navigate("/add-job")}
+            className="flex items-center gap-1 shadow-sm"
+          >
+            <span>➕</span>
+            <span>Add Job</span>
+          </Button>
+        </div>
       </div>
 
       {/* Stats cards */}
