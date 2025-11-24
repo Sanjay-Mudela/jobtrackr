@@ -10,7 +10,6 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Card from "../components/ui/Card";
 
-
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
 
@@ -403,21 +402,23 @@ function Dashboard() {
                     </span>
                   </td>
 
-                  <td className="px-4 py-3 space-x-2">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => navigate(`/edit-job/${job._id}`)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDelete(job._id)}
-                    >
-                      Delete
-                    </Button>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => navigate(`/edit-job/${job._id}`)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDelete(job._id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
