@@ -6,6 +6,7 @@ import AddJob from "./pages/AddJob.jsx";
 import EditJob from "./pages/EditJob.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { useAuth } from "./context/AuthContext";
+import Button from "./components/ui/Button";
 
 function App() {
   const { user, logout } = useAuth();
@@ -14,7 +15,7 @@ function App() {
     <div className="min-h-screen text-slate-100 bg-gradient-to-b from-slate-950 to-slate-900">
       {/* Navbar */}
       <nav className="sticky top-0 z-10 bg-slate-950/70 backdrop-blur-xl border-b border-slate-800 shadow-md">
-         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
           <Link to="/" className="text-xl font-bold text-indigo-400">
             JobTrackr
           </Link>
@@ -45,12 +46,9 @@ function App() {
                 >
                   Dashboard
                 </Link>
-                <button
-                  onClick={logout}
-                  className="text-sm px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700"
-                >
+                <Button variant="secondary" size="sm" onClick={logout}>
                   Logout
-                </button>
+                </Button>
               </>
             )}
           </div>

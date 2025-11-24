@@ -6,6 +6,7 @@ import { useToast } from "../context/ToastContext";
 import StatusChart from "../components/StatusChart";
 import SourceChart from "../components/SourceChart";
 import ApplicationsOverTimeChart from "../components/ApplicationsOverTimeChart";
+import Button from "../components/ui/Button";
 
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
@@ -182,13 +183,15 @@ function Dashboard() {
           </p>
         </div>
 
-        <button
+        <Button
+          variant="primary"
+          size="md"
           onClick={() => navigate("/add-job")}
-          className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-sm font-medium shadow-sm"
+          className="flex items-center gap-1 shadow-sm"
         >
           <span>➕</span>
           <span>Add Job</span>
-        </button>
+        </Button>
       </div>
 
       {/* Stats cards */}
@@ -398,20 +401,20 @@ function Dashboard() {
                   </td>
 
                   <td className="px-4 py-3 space-x-2">
-                    <button
+                    <Button
+                      variant="secondary"
+                      size="sm"
                       onClick={() => navigate(`/edit-job/${job._id}`)}
-                      className="px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-xs transition-transform duration-150 active:scale-95"
                     >
                       Edit
-                    </button>
-
-                    <button
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
                       onClick={() => handleDelete(job._id)}
-                      className="px-2 py-1 rounded-md bg-rose-600 hover:bg-rose-700 text-xs transition-transform duration-150 active:scale-95"
                     >
                       Delete
-                    </button>
-                    
+                    </Button>                    
                   </td>
                 </tr>
               ))}
