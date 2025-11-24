@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import StatusChart from "../components/StatusChart";
 
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
@@ -224,6 +225,9 @@ function Dashboard() {
         )}
       </div>
 
+      {/* Status chart */}
+      {!loadingStats && stats && <StatusChart stats={stats} />}
+
       {/* Filters row: Search + Status + Sort */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         {/* Left side: search + status */}
@@ -363,7 +367,7 @@ function Dashboard() {
                   </td>
 
                   <td className="px-4 py-3">{job.position}</td>
-                  
+
                   <td className="px-4 py-3">
                     <span className={getStatusBadgeClasses(job.status)}>
                       {job.status}
