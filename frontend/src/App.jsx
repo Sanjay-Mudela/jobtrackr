@@ -11,10 +11,10 @@ function App() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className="min-h-screen text-slate-100 bg-gradient-to-b from-slate-950 to-slate-900">
       {/* Navbar */}
-      <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+      <nav className="sticky top-0 z-10 bg-slate-950/70 backdrop-blur-xl border-b border-slate-800 shadow-md">
+         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
           <Link to="/" className="text-xl font-bold text-indigo-400">
             JobTrackr
           </Link>
@@ -58,7 +58,7 @@ function App() {
       </nav>
 
       {/* Main content */}
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8 sm:px-8">
         <Routes>
           <Route
             path="/"
