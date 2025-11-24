@@ -192,43 +192,43 @@ function Dashboard() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {loadingStats || !stats ? (
-          <p className="text-sm text-slate-300">Loading stats...</p>
-        ) : (
-          <>
-            <StatCard label="Total" value={stats.total} color="bg-slate-800" />
-            <StatCard
-              label="Applied"
-              value={stats["Applied"]}
-              color="bg-blue-900/60"
-            />
-            <StatCard
-              label="Online Test"
-              value={stats["Online Test"]}
-              color="bg-amber-900/60"
-            />
-            <StatCard
-              label="Interview"
-              value={stats["Interview"]}
-              color="bg-purple-900/60"
-            />
-            <StatCard
-              label="Offer"
-              value={stats["Offer"]}
-              color="bg-emerald-900/60"
-            />
-            <StatCard
-              label="Rejected"
-              value={stats["Rejected"]}
-              color="bg-rose-900/60"
-            />
-          </>
-        )}
-      </div>
+      {loadingStats || !stats ? (
+        <StatsSkeleton />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <StatCard label="Total" value={stats.total} color="bg-slate-800" />
+          <StatCard
+            label="Applied"
+            value={stats["Applied"]}
+            color="bg-blue-900/60"
+          />
+          <StatCard
+            label="Online Test"
+            value={stats["Online Test"]}
+            color="bg-amber-900/60"
+          />
+          <StatCard
+            label="Interview"
+            value={stats["Interview"]}
+            color="bg-purple-900/60"
+          />
+          <StatCard
+            label="Offer"
+            value={stats["Offer"]}
+            color="bg-emerald-900/60"
+          />
+          <StatCard
+            label="Rejected"
+            value={stats["Rejected"]}
+            color="bg-rose-900/60"
+          />
+        </div>
+      )}
 
       {/* Charts row: status + source */}
-      {!loadingStats && stats && (
+      {loadingStats || !stats ? (
+        <ChartsSkeleton />
+      ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <StatusChart stats={stats} />
           <SourceChart jobs={jobs} />
@@ -322,13 +322,24 @@ function Dashboard() {
         </div>
 
         {loadingJobs ? (
-          <p className="p-4 text-sm text-slate-300">Loading jobs...</p>
+          <JobsTableSkeleton />
         ) : error ? (
           <p className="p-4 text-sm text-red-400">{error}</p>
+        ) : jobs.length === 0 ? (
+          <div className="p-6 text-center text-sm text-slate-300">
+            <p>You haven&apos;t added any job applications yet.</p>
+            <button
+              onClick={() => navigate("/add-job")}
+              className="mt-3 inline-flex items-center gap-1 rounded-lg bg-indigo-500 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-600 transition"
+            >
+              <span>➕</span>
+              <span>Add your first job</span>
+            </button>
+          </div>
         ) : filteredJobs.length === 0 ? (
           <p className="p-4 text-sm text-slate-300">
-            No jobs match your search/filter. Try clearing filters or adding a
-            new job.
+            No jobs match your search/filter. Try clearing filters or adjusting
+            your search.
           </p>
         ) : (
           <table className="w-full text-sm">
@@ -344,7 +355,7 @@ function Dashboard() {
               {sortedJobs.map((job) => (
                 <tr
                   key={job._id}
-                  className="border-t border-slate-800 hover:bg-slate-900/80"
+                  className="border-t border-slate-800 hover:bg-slate-900/80 transition-colors duration-150"
                 >
                   <td className="px-4 py-3 align-top">
                     <div className="font-medium text-slate-100">
@@ -389,16 +400,18 @@ function Dashboard() {
                   <td className="px-4 py-3 space-x-2">
                     <button
                       onClick={() => navigate(`/edit-job/${job._id}`)}
-                      className="px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-xs"
+                      className="px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-xs transition-transform duration-150 active:scale-95"
                     >
                       Edit
                     </button>
+
                     <button
                       onClick={() => handleDelete(job._id)}
-                      className="px-2 py-1 rounded-md bg-rose-600 hover:bg-rose-700 text-xs"
+                      className="px-2 py-1 rounded-md bg-rose-600 hover:bg-rose-700 text-xs transition-transform duration-150 active:scale-95"
                     >
                       Delete
                     </button>
+                    
                   </td>
                 </tr>
               ))}
@@ -419,6 +432,43 @@ function StatCard({ label, value, color }) {
         {label}
       </span>
       <span className="text-2xl font-bold text-white">{value}</span>
+    </div>
+  );
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 animate-pulse">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={i}
+          className="h-20 rounded-xl border border-slate-800 bg-slate-800/60"
+        />
+      ))}
+    </div>
+  );
+}
+
+function ChartsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-pulse">
+      {[1, 2].map((i) => (
+        <div
+          key={i}
+          className="h-64 rounded-xl border border-slate-800 bg-slate-800/60"
+        />
+      ))}
+    </div>
+  );
+}
+
+function JobsTableSkeleton() {
+  return (
+    <div className="p-4 space-y-3 animate-pulse">
+      <div className="h-4 w-32 bg-slate-700/70 rounded" />
+      <div className="h-10 w-full bg-slate-800/60 rounded" />
+      <div className="h-10 w-full bg-slate-800/60 rounded" />
+      <div className="h-10 w-full bg-slate-800/60 rounded" />
     </div>
   );
 }
