@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import StatusChart from "../components/StatusChart";
 import SourceChart from "../components/SourceChart";
+import ApplicationsOverTimeChart from "../components/ApplicationsOverTimeChart";
 
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
@@ -232,6 +233,11 @@ function Dashboard() {
           <StatusChart stats={stats} />
           <SourceChart jobs={jobs} />
         </div>
+      )}
+
+      {/* Applications over time (uses jobs) */}
+      {!loadingJobs && jobs.length > 0 && (
+        <ApplicationsOverTimeChart jobs={jobs} />
       )}
 
       {/* Filters row: Search + Status + Sort */}
