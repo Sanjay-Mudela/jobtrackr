@@ -84,6 +84,8 @@ function Dashboard() {
 
   const { showToast } = useToast();
 
+  const [deletingJobId, setDeletingJobId] = useState(null);
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -116,16 +118,14 @@ function Dashboard() {
     const confirmed = window.confirm(
       "Are you sure you want to delete this job application?\nThis action cannot be undone."
     );
-
     if (!confirmed) return;
+
+    setDeletingJobId(id); // disable specific delete button
 
     try {
       await api.delete(`/jobs/${id}`);
-
-      // Remove from local state
       setJobs((prev) => prev.filter((j) => j._id !== id));
 
-      // Refresh stats after delete
       const res = await api.get("/jobs/stats");
       setStats(res.data);
 
@@ -133,8 +133,8 @@ function Dashboard() {
     } catch (err) {
       console.error(err);
       showToast("Delete failed", "error");
-      // You can keep this alert if you want extra visibility, or remove it:
-      // alert("Delete failed");
+    } finally {
+      setDeletingJobId(null); // re-enable button
     }
   };
 
@@ -447,8 +447,9 @@ function Dashboard() {
                         variant="danger"
                         size="sm"
                         onClick={() => handleDelete(job._id)}
+                        disabled={deletingJobId === job._id}
                       >
-                        Delete
+                        {deletingJobId === job._id ? "Deleting..." : "Delete"}
                       </Button>
                     </div>
                   </td>
