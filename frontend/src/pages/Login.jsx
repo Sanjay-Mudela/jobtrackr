@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import Input from "../components/ui/Input";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -56,10 +57,9 @@ function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm text-slate-200">Email</label>
-            <input
+            <Input
               type="email"
               name="email"
-              className="input-field"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
@@ -68,10 +68,9 @@ function Login() {
 
           <div>
             <label className="text-sm text-slate-200">Password</label>
-            <input
+            <Input
               type="password"
               name="password"
-              className="input-field"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}

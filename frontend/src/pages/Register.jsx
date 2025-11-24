@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import Input from "../components/ui/Input";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -59,10 +60,9 @@ function Register() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm text-slate-200">Name</label>
-            <input
+            <Input
               type="text"
               name="name"
-              className="input-field"
               placeholder="Your full name"
               value={formData.name}
               onChange={handleChange}
@@ -71,10 +71,9 @@ function Register() {
 
           <div>
             <label className="text-sm text-slate-200">Email</label>
-            <input
+            <Input
               type="email"
               name="email"
-              className="input-field"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
@@ -83,10 +82,9 @@ function Register() {
 
           <div>
             <label className="text-sm text-slate-200">Password</label>
-            <input
+            <Input
               type="password"
               name="password"
-              className="input-field"
               placeholder="Create a strong password"
               value={formData.password}
               onChange={handleChange}

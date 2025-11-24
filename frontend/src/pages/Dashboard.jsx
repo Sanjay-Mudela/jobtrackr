@@ -7,6 +7,7 @@ import StatusChart from "../components/StatusChart";
 import SourceChart from "../components/SourceChart";
 import ApplicationsOverTimeChart from "../components/ApplicationsOverTimeChart";
 import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
 
 function getFollowUpInfo(job) {
   if (!job.followUpDate) return null;
@@ -250,10 +251,10 @@ function Dashboard() {
           {/* Search */}
           <div className="w-full sm:w-64">
             <label className="text-xs text-slate-300">Search</label>
-            <input
+            <Input
               type="text"
               placeholder="Search by company or position..."
-              className="input-field mt-1"
+              className="mt-1"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -414,7 +415,7 @@ function Dashboard() {
                       onClick={() => handleDelete(job._id)}
                     >
                       Delete
-                    </Button>                    
+                    </Button>
                   </td>
                 </tr>
               ))}

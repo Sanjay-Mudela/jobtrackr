@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
+import Input from "../components/ui/Input";
 
 function EditJob() {
   const { id } = useParams();
@@ -76,19 +77,13 @@ function EditJob() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm text-slate-200">Company</label>
-            <input
-              name="company"
-              className="input-field"
-              value={job.company}
-              onChange={handleChange}
-            />
+            <Input name="company" value={job.company} onChange={handleChange} />
           </div>
 
           <div>
             <label className="text-sm text-slate-200">Position</label>
-            <input
+            <Input
               name="position"
-              className="input-field"
               value={job.position}
               onChange={handleChange}
             />
@@ -135,10 +130,9 @@ function EditJob() {
               Follow-up date{" "}
               <span className="text-xs text-slate-400">(optional)</span>
             </label>
-            <input
+            <Input
               type="date"
               name="followUpDate"
-              className="input-field"
               value={job.followUpDate || ""}
               onChange={handleChange}
             />
@@ -149,9 +143,8 @@ function EditJob() {
 
           <div>
             <label className="text-sm text-slate-200">Location</label>
-            <input
+            <Input
               name="location"
-              className="input-field"
               value={job.location || ""}
               onChange={handleChange}
             />

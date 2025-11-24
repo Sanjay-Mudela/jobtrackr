@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
+import Input from "../components/ui/Input";
 
 function AddJob() {
   const [formData, setFormData] = useState({
@@ -56,9 +57,8 @@ function AddJob() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm text-slate-200">Company</label>
-            <input
+            <Input
               name="company"
-              className="input-field"
               placeholder="Company name"
               value={formData.company}
               onChange={handleChange}
@@ -68,9 +68,8 @@ function AddJob() {
 
           <div>
             <label className="text-sm text-slate-200">Position</label>
-            <input
+            <Input
               name="position"
-              className="input-field"
               placeholder="Job title / role"
               value={formData.position}
               onChange={handleChange}
@@ -118,10 +117,9 @@ function AddJob() {
               Follow-up date{" "}
               <span className="text-xs text-slate-400">(optional)</span>
             </label>
-            <input
+            <Input
               type="date"
               name="followUpDate"
-              className="input-field"
               value={formData.followUpDate}
               onChange={handleChange}
             />
@@ -132,9 +130,8 @@ function AddJob() {
 
           <div>
             <label className="text-sm text-slate-200">Location</label>
-            <input
+            <Input
               name="location"
-              className="input-field"
               placeholder="City / Remote"
               value={formData.location}
               onChange={handleChange}
