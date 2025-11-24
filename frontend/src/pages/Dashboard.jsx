@@ -89,6 +89,8 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
 
+  const [selectedJob, setSelectedJob] = useState(null);
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -462,6 +464,13 @@ function Dashboard() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedJob(job)}
+                        >
+                          View
+                        </Button>
+                        <Button
                           variant="secondary"
                           size="sm"
                           onClick={() => navigate(`/edit-job/${job._id}`)}
@@ -538,6 +547,105 @@ function Dashboard() {
           </>
         )}
       </Card>
+      {selectedJob && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="max-w-lg w-full mx-4">
+            <Card className="p-6 relative">
+              {/* Close button */}
+              <button
+                onClick={() => setSelectedJob(null)}
+                className="absolute right-4 top-4 text-slate-400 hover:text-slate-200 text-lg"
+                aria-label="Close job details"
+              >
+                ×
+              </button>
+
+              {/* Title */}
+              <h2 className="text-lg font-semibold text-slate-50 mb-1">
+                {selectedJob.position}
+              </h2>
+              <p className="text-sm text-slate-300 mb-4">
+                {selectedJob.company}{" "}
+                {selectedJob.location && (
+                  <>
+                    •{" "}
+                    <span className="text-slate-400">
+                      {selectedJob.location}
+                    </span>
+                  </>
+                )}
+              </p>
+
+              {/* Status + Source + Applied date */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 text-xs">
+                <div>
+                  <p className="text-slate-400">Status</p>
+                  <p className="mt-1 inline-flex items-center rounded-full bg-slate-800 px-2 py-1 text-[11px] text-slate-100">
+                    {selectedJob.status}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-slate-400">Source</p>
+                  <p className="mt-1 text-slate-100">
+                    {selectedJob.source || "Not specified"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-slate-400">Applied on</p>
+                  <p className="mt-1 text-slate-100">
+                    {selectedJob.createdAt
+                      ? new Date(selectedJob.createdAt).toLocaleDateString()
+                      : "Unknown"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Follow-up info */}
+              <div className="mb-4 text-xs">
+                <p className="text-slate-400">Follow-up</p>
+                {selectedJob.followUpDate ? (
+                  <p className="mt-1 text-slate-100">
+                    {new Date(selectedJob.followUpDate).toLocaleDateString()}
+                  </p>
+                ) : (
+                  <p className="mt-1 text-slate-500">No follow-up set</p>
+                )}
+              </div>
+
+              {/* Notes */}
+              <div className="text-xs">
+                <p className="text-slate-400 mb-1">Notes</p>
+                <p className="whitespace-pre-wrap text-slate-100">
+                  {selectedJob.notes && selectedJob.notes.trim().length > 0
+                    ? selectedJob.notes
+                    : "No notes added yet."}
+                </p>
+              </div>
+
+              {/* Footer actions */}
+              <div className="mt-6 flex justify-end gap-2 text-xs">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedJob(null);
+                    navigate(`/edit-job/${selectedJob._id}`);
+                  }}
+                >
+                  Edit job
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedJob(null)}
+                >
+                  Close
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
