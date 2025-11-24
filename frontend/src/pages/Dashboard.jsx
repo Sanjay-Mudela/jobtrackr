@@ -18,6 +18,9 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
+  // NEW: sorting state
+  const [sortOption, setSortOption] = useState("latest");
+
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -71,6 +74,36 @@ function Dashboard() {
       statusFilter === "All" ? true : job.status === statusFilter;
 
     return matchesSearch && matchesStatus;
+  });
+
+  // NEW: sort the filtered jobs
+  const sortedJobs = [...filteredJobs].sort((a, b) => {
+    // Prefer appliedDate if present, otherwise fall back to createdAt
+    const dateA = new Date(a.appliedDate || a.createdAt);
+    const dateB = new Date(b.appliedDate || b.createdAt);
+
+    if (sortOption === "latest") {
+      // Newest first
+      return dateB - dateA;
+    }
+
+    if (sortOption === "oldest") {
+      // Oldest first
+      return dateA - dateB;
+    }
+
+    if (sortOption === "company-asc") {
+      // Company A–Z
+      return a.company.localeCompare(b.company);
+    }
+
+    if (sortOption === "company-desc") {
+      // Company Z–A
+      return b.company.localeCompare(a.company);
+    }
+
+    // Fallback: no change
+    return 0;
   });
 
   return (
@@ -131,9 +164,11 @@ function Dashboard() {
         )}
       </div>
 
-      {/* Filters row: Search + Status */}
+      {/* Filters row: Search + Status + Sort */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-        <div className="flex-1 flex gap-3">
+        {/* Left side: search + status */}
+        <div className="flex-1 flex flex-col sm:flex-row gap-3">
+          {/* Search */}
           <div className="w-full sm:w-64">
             <label className="text-xs text-slate-300">Search</label>
             <input
@@ -145,7 +180,8 @@ function Dashboard() {
             />
           </div>
 
-          <div className="w-40">
+          {/* Status filter */}
+          <div className="w-full sm:w-40">
             <label className="text-xs text-slate-300">Status</label>
             <select
               className="input-field mt-1"
@@ -160,13 +196,28 @@ function Dashboard() {
               <option value="Rejected">Rejected</option>
             </select>
           </div>
+
+          {/* NEW: Sort dropdown */}
+          <div className="w-full sm:w-48">
+            <label className="text-xs text-slate-300">Sort by</label>
+            <select
+              className="input-field mt-1"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+            >
+              <option value="latest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="company-asc">Company (A–Z)</option>
+              <option value="company-desc">Company (Z–A)</option>
+            </select>
+          </div>
         </div>
 
-        {/* Optional count display */}
+        {/* Right side: count display */}
         <div className="text-xs text-slate-400 text-right">
           Showing{" "}
           <span className="text-slate-100 font-semibold">
-            {filteredJobs.length}
+            {sortedJobs.length}
           </span>{" "}
           of <span className="text-slate-100 font-semibold">{jobs.length}</span>{" "}
           jobs
@@ -199,7 +250,7 @@ function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredJobs.map((job) => (
+              {sortedJobs.map((job) => (
                 <tr
                   key={job._id}
                   className="border-t border-slate-800 hover:bg-slate-900/80"
