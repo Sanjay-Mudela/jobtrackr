@@ -1,4 +1,3 @@
-// frontend/src/components/StatusChart.jsx
 import {
   BarChart,
   Bar,
@@ -7,7 +6,16 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Cell,
 } from "recharts";
+
+const STATUS_COLORS = {
+  Applied: "#6366f1", // indigo
+  "Online Test": "#f59e0b", // amber
+  Interview: "#a855f7", // purple
+  Offer: "#10b981", // emerald
+  Rejected: "#ef4444", // red
+};
 
 function StatusChart({ stats }) {
   if (!stats) return null;
@@ -20,47 +28,71 @@ function StatusChart({ stats }) {
     { name: "Rejected", value: stats["Rejected"] || 0 },
   ];
 
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-3">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-100">
-          Applications by status
-        </h3>
-        <p className="text-[11px] text-slate-400">
-          Overview of how your applications are distributed.
-        </p>
+    <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between gap-4">
+        <div>
+          <h3 className="text-sm font-semibold text-slate-100">
+            Applications by status
+          </h3>
+          <p className="text-[11px] text-slate-400">
+            Visual breakdown of where your applications currently are.
+          </p>
+        </div>
+        <div className="rounded-full bg-slate-800/60 px-3 py-1 text-[11px] text-slate-300">
+          Total: <span className="font-semibold text-slate-100">{total}</span>
+        </div>
       </div>
 
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+          <BarChart
+            data={data}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#1f2937" // slate-800
+              vertical={false}
+            />
             <XAxis
               dataKey="name"
-              tick={{ fontSize: 11, fill: "#9ca3af" }}
-              axisLine={{ stroke: "#374151" }}
-              tickLine={{ stroke: "#374151" }}
+              tick={{ fontSize: 11, fill: "#9ca3af" }} // slate-400
+              axisLine={{ stroke: "#1f2937" }}
+              tickLine={false}
             />
             <YAxis
               allowDecimals={false}
               tick={{ fontSize: 11, fill: "#9ca3af" }}
-              axisLine={{ stroke: "#374151" }}
-              tickLine={{ stroke: "#374151" }}
+              axisLine={{ stroke: "#1f2937" }}
+              tickLine={false}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#020617",
-                borderColor: "#1f2937",
-                borderRadius: "0.5rem",
+                backgroundColor: "#020617", // slate-950
+                borderColor: "#1f2937", // slate-800
+                borderRadius: "0.75rem",
                 fontSize: "12px",
+                padding: "8px 10px",
               }}
-              cursor={{ fill: "rgba(148, 163, 184, 0.1)" }}
+              labelStyle={{ color: "#e5e7eb", marginBottom: 4 }} // slate-200
+              itemStyle={{ color: "#e5e7eb" }}
+              cursor={{ fill: "rgba(148, 163, 184, 0.06)" }} // slate-400/6
             />
             <Bar
               dataKey="value"
-              radius={[6, 6, 0, 0]}
-              // Recharts will use default color; your Tailwind theme keeps overall style dark
-            />
+              radius={[8, 8, 0, 0]}
+              barSize={32}
+            >
+              {data.map((entry) => (
+                <Cell
+                  key={entry.name}
+                  fill={STATUS_COLORS[entry.name] || "#6366f1"}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
