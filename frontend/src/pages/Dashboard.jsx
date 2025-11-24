@@ -4,6 +4,37 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
+function getFollowUpInfo(job) {
+  if (!job.followUpDate) return null;
+
+  const today = new Date();
+  const follow = new Date(job.followUpDate);
+
+  // Ignore time portion (only compare dates)
+  today.setHours(0, 0, 0, 0);
+  follow.setHours(0, 0, 0, 0);
+
+  const diffMs = follow.getTime() - today.getTime();
+  const diffDays = diffMs / (1000 * 60 * 60 * 24); // +ve: future, -ve: past
+
+  const finalStatuses = ["Offer", "Rejected"];
+  const isFinal = finalStatuses.includes(job.status);
+
+  if (isFinal) return null;
+
+  if (diffDays < 0) {
+    return { label: "Follow-up overdue", type: "overdue" };
+  }
+  if (diffDays === 0) {
+    return { label: "Follow up today", type: "today" };
+  }
+  if (diffDays > 0 && diffDays <= 3) {
+    return { label: "Upcoming follow-up", type: "upcoming" };
+  }
+
+  return { label: "Follow-up scheduled", type: "scheduled" };
+}
+
 function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -17,9 +48,9 @@ function Dashboard() {
   // NEW: search + filter state
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-
   // NEW: sorting state
   const [sortOption, setSortOption] = useState("latest");
+  const [showFollowUpsOnly, setShowFollowUpsOnly] = useState(false);
 
   const { showToast } = useToast();
 
@@ -73,7 +104,12 @@ function Dashboard() {
     const matchesStatus =
       statusFilter === "All" ? true : job.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
+    // NEW: follow-up filter
+    const matchesFollowUp = !showFollowUpsOnly
+      ? true
+      : Boolean(getFollowUpInfo(job));
+
+    return matchesSearch && matchesStatus && matchesFollowUp;
   });
 
   // NEW: sort the filtered jobs
@@ -213,14 +249,29 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Right side: count display */}
-        <div className="text-xs text-slate-400 text-right">
-          Showing{" "}
-          <span className="text-slate-100 font-semibold">
-            {sortedJobs.length}
-          </span>{" "}
-          of <span className="text-slate-100 font-semibold">{jobs.length}</span>{" "}
-          jobs
+        {/* Right side: follow-up toggle + count */}
+        <div className="flex flex-col items-end gap-2 text-xs">
+          {/* NEW: Follow-ups only toggle */}
+          <label className="flex items-center gap-2 text-slate-300">
+            <input
+              type="checkbox"
+              checked={showFollowUpsOnly}
+              onChange={(e) => setShowFollowUpsOnly(e.target.checked)}
+              className="h-4 w-4 rounded border-slate-500 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
+            />
+            <span className="text-[11px] sm:text-xs">Show follow-ups only</span>
+          </label>
+
+          {/* Count display */}
+          <div className="text-[11px] sm:text-xs text-slate-400">
+            Showing{" "}
+            <span className="text-slate-100 font-semibold">
+              {sortedJobs.length}
+            </span>{" "}
+            of{" "}
+            <span className="text-slate-100 font-semibold">{jobs.length}</span>{" "}
+            jobs
+          </div>
         </div>
       </div>
 

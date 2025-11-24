@@ -11,6 +11,7 @@ function AddJob() {
     source: "LinkedIn",
     location: "",
     notes: "",
+    followUpDate: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -110,6 +111,23 @@ function AddJob() {
                 <option>Other</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm text-slate-200">
+              Follow-up date{" "}
+              <span className="text-xs text-slate-400">(optional)</span>
+            </label>
+            <input
+              type="date"
+              name="followUpDate"
+              className="input-field"
+              value={formData.followUpDate}
+              onChange={handleChange}
+            />
+            <p className="mt-1 text-[11px] text-slate-500">
+              Choose when you want to follow up with HR/recruiter for this job.
+            </p>
           </div>
 
           <div>

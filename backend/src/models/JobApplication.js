@@ -37,6 +37,7 @@ const jobApplicationSchema = new mongoose.Schema(
     },
     followUpDate: {
       type: Date,
+      default: null,
     },
     ctc: {
       type: Number,

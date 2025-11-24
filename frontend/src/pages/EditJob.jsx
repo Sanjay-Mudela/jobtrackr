@@ -16,7 +16,17 @@ function EditJob() {
     const fetchJob = async () => {
       try {
         const res = await api.get(`/jobs/${id}`);
-        setJob(res.data);
+        const data = res.data;
+
+        // Normalize followUpDate for <input type="date" />
+        const normalizedJob = {
+          ...data,
+          followUpDate: data.followUpDate
+            ? data.followUpDate.slice(0, 10) // "YYYY-MM-DD"
+            : "",
+        };
+
+        setJob(normalizedJob);
       } catch (err) {
         console.error(err);
         alert("Failed to load job");
@@ -24,6 +34,7 @@ function EditJob() {
         setLoading(false);
       }
     };
+
     fetchJob();
   }, [id]);
 
@@ -116,6 +127,24 @@ function EditJob() {
                 <option>Other</option>
               </select>
             </div>
+          </div>
+
+          {/* NEW: Follow-up date (optional) */}
+          <div>
+            <label className="text-sm text-slate-200">
+              Follow-up date{" "}
+              <span className="text-xs text-slate-400">(optional)</span>
+            </label>
+            <input
+              type="date"
+              name="followUpDate"
+              className="input-field"
+              value={job.followUpDate || ""}
+              onChange={handleChange}
+            />
+            <p className="mt-1 text-[11px] text-slate-500">
+              Update when you plan to follow up for this application.
+            </p>
           </div>
 
           <div>
