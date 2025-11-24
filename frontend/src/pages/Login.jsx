@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -18,8 +18,17 @@ function Login() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  const location = useLocation();
   const { showToast } = useToast();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const reason = params.get("reason");
+
+    if (reason === "session-expired") {
+      showToast("Session expired, please sign in again", "error");
+    }
+  }, [location.search, showToast]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
