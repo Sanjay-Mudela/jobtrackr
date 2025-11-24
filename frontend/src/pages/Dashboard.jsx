@@ -113,16 +113,28 @@ function Dashboard() {
   }, []);
 
   const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this job application?\nThis action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
     try {
       await api.delete(`/jobs/${id}`);
+
+      // Remove from local state
       setJobs((prev) => prev.filter((j) => j._id !== id));
+
+      // Refresh stats after delete
       const res = await api.get("/jobs/stats");
       setStats(res.data);
+
       showToast("Job deleted successfully 🗑️", "success");
     } catch (err) {
       console.error(err);
       showToast("Delete failed", "error");
-      alert("Delete failed");
+      // You can keep this alert if you want extra visibility, or remove it:
+      // alert("Delete failed");
     }
   };
 
