@@ -2,15 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Smooth scrolling feels nicer when jumping to sections */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  @apply bg-slate-900 text-slate-100;
+  @apply bg-slate-950 text-slate-100;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+/* Shared input style – now also handles disabled state nicely */
 .input-field {
   @apply w-full mt-1 px-3 py-2 rounded-md bg-slate-800 text-slate-100
-         placeholder-slate-400 border border-slate-700
-         focus:outline-none focus:ring-2 focus:ring-indigo-500;
+         placeholder-slate-400 border border-slate-700 text-sm
+         focus:outline-none focus:ring-2 focus:ring-indigo-500
+         disabled:opacity-60 disabled:cursor-not-allowed;
 }
-
-
