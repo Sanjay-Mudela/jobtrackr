@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 function Dashboard() {
   const { user } = useAuth();
@@ -16,6 +17,8 @@ function Dashboard() {
   // NEW: search + filter state
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -51,12 +54,11 @@ function Dashboard() {
       setJobs((prev) => prev.filter((j) => j._id !== id));
       const res = await api.get("/jobs/stats");
       setStats(res.data);
+      showToast("Job deleted successfully 🗑️", "success");
     } catch (err) {
-      alert(
-        `Delete failed due to error: ${
-          err.response?.data?.message || err.message
-        }`
-      );
+      console.error(err);
+      showToast("Delete failed", "error");
+      alert("Delete failed");
     }
   };
 

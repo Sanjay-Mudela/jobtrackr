@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 
 function AddJob() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ function AddJob() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { showToast } = useToast();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -25,9 +28,11 @@ function AddJob() {
 
     try {
       await api.post("/jobs", formData);
+      showToast("Job added successfully ✅", "success");
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
+      showToast("Error adding job", "error");
       alert("Error adding job");
     } finally {
       setLoading(false);

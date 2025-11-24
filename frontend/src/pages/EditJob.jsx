@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 
 function EditJob() {
   const { id } = useParams();
@@ -8,6 +9,8 @@ function EditJob() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -33,9 +36,11 @@ function EditJob() {
     setSaving(true);
     try {
       await api.put(`/jobs/${id}`, job);
+      showToast("Job updated successfully ✏️", "success");
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
+      showToast("Failed to update job", "error");
       alert("Failed to update job");
     } finally {
       setSaving(false);

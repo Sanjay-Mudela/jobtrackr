@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ function Login() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const { showToast } = useToast();
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -30,11 +33,13 @@ function Login() {
     try {
       const res = await api.post("/auth/login", formData);
       login(res.data.user, res.data.token);
+      showToast("Logged in successfully ✅", "success");
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || "Login failed";
       setError(msg);
+      showToast(msg, "error");
     } finally {
       setLoading(false);
     }
@@ -90,7 +95,10 @@ function Login() {
 
         <p className="text-xs text-slate-400 mt-4">
           Don&apos;t have an account?{" "}
-          <Link to="/register" className="text-indigo-400 hover:text-indigo-300">
+          <Link
+            to="/register"
+            className="text-indigo-400 hover:text-indigo-300"
+          >
             Register here
           </Link>
         </p>

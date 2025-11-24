@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ function Register() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const { showToast } = useToast();
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -31,11 +34,13 @@ function Register() {
     try {
       const res = await api.post("/auth/register", formData);
       login(res.data.user, res.data.token);
+      showToast("Account created successfully 🎉", "success");
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || "Registration failed";
       setError(msg);
+      showToast(msg, "error");
     } finally {
       setLoading(false);
     }
@@ -44,7 +49,9 @@ function Register() {
   return (
     <div className="max-w-md mx-auto mt-10">
       <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 shadow-lg">
-        <h2 className="text-xl font-semibold text-white mb-1">Create account</h2>
+        <h2 className="text-xl font-semibold text-white mb-1">
+          Create account
+        </h2>
         <p className="text-sm text-slate-400 mb-6">
           Start tracking your job applications in minutes.
         </p>
