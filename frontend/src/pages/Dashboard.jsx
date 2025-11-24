@@ -306,7 +306,38 @@ function Dashboard() {
                   key={job._id}
                   className="border-t border-slate-800 hover:bg-slate-900/80"
                 >
-                  <td className="px-4 py-3">{job.company}</td>
+                  <td className="px-4 py-3 align-top">
+                    <div className="font-medium text-slate-100">
+                      {job.company}
+                    </div>
+
+                    {/* Follow-up badge (if any) */}
+                    {(() => {
+                      const info = getFollowUpInfo(job);
+                      if (!info) return null;
+
+                      let baseClasses =
+                        "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium mt-1";
+
+                      if (info.type === "overdue") {
+                        baseClasses +=
+                          " bg-red-500/15 text-red-300 ring-1 ring-red-500/40";
+                      } else if (info.type === "today") {
+                        baseClasses +=
+                          " bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/40";
+                      } else if (info.type === "upcoming") {
+                        baseClasses +=
+                          " bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/40";
+                      } else {
+                        // scheduled
+                        baseClasses +=
+                          " bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/30";
+                      }
+
+                      return <span className={baseClasses}>{info.label}</span>;
+                    })()}
+                  </td>
+
                   <td className="px-4 py-3">{job.position}</td>
                   <td className="px-4 py-3">{job.status}</td>
                   <td className="px-4 py-3 space-x-2">
