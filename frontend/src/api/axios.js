@@ -1,11 +1,19 @@
 import axios from "axios";
 
-// 1️⃣ Create a dedicated axios instance
+// ✅ IMPORTANT:
+// Set this in your .env file as: VITE_API_URL="https://your-render-backend.onrender.com/api"
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
-// 2️⃣ Request interceptor: attach token to every request
+// If VITE_API_URL is missing, log it to help debugging
+if (!import.meta.env.VITE_API_URL) {
+  console.warn(
+    "VITE_API_URL is not set. API requests will fail. Set it in your .env and Vercel env."
+  );
+}
+
+// 🔹 Attach token to all requests
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jobtrackr_token");
@@ -14,27 +22,23 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// 3️⃣ Response interceptor: handle 401 (unauthorized)
+// 🔹 Handle unauthorized responses
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If backend says: "you are not authorized" (token missing/expired/invalid)
     if (error.response?.status === 401) {
-      // Clear any stored auth data
+      // Token invalid / expired -> clear and (optionally) redirect
       localStorage.removeItem("jobtrackr_user");
       localStorage.removeItem("jobtrackr_token");
 
-      // If we're not already on login, redirect with a query parameter
+      // Avoid infinite loops: only redirect if not already on /login
       if (window.location.pathname !== "/login") {
         window.location.href = "/login?reason=session-expired";
       }
     }
-
     return Promise.reject(error);
   }
 );
