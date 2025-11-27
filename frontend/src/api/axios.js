@@ -1,19 +1,21 @@
 import axios from "axios";
 
-// ✅ IMPORTANT:
-// Set this in your .env file as: VITE_API_URL="https://your-render-backend.onrender.com/api"
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
+// Prefer env, but fall back to localhost in dev
+const baseURL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:5000/api" : undefined);
 
-// If VITE_API_URL is missing, log it to help debugging
-if (!import.meta.env.VITE_API_URL) {
-  console.warn(
-    "VITE_API_URL is not set. API requests will fail. Set it in your .env and Vercel env."
+if (!baseURL) {
+  console.error(
+    "❌ API baseURL is not configured. Set VITE_API_URL in your environment."
   );
 }
 
-// 🔹 Attach token to all requests
+const api = axios.create({
+  baseURL,
+});
+
+// Attach token to every request
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jobtrackr_token");
@@ -25,16 +27,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 🔹 Handle unauthorized responses
+// Handle 401 globally (optional, but you had this before)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token invalid / expired -> clear and (optionally) redirect
       localStorage.removeItem("jobtrackr_user");
       localStorage.removeItem("jobtrackr_token");
 
-      // Avoid infinite loops: only redirect if not already on /login
       if (window.location.pathname !== "/login") {
         window.location.href = "/login?reason=session-expired";
       }
